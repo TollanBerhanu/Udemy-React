@@ -15,7 +15,7 @@ This repository contains lecture notes and homework exercises for Udemy's React 
 To get started, clone this repository to your local machine using the following command:
 
 ```
-git clone https://github.com/<your-username>/udemy-react-course.git
+git clone https://github.com/TollanBerhanu/udemy-react-course.git
 ```
 
 Then navigate to the directory for the lecture or exercise you want to work on and open the relevant files in your code editor.
