@@ -7,4 +7,4 @@
 7. Pass the event-handler method reference to the UserInput component and bind it to the input-change event
 8. Ensure that the new input entered by the user overwrites the old username passed to UserOutput
 9. Add two-way-binding to your input (in UserInput) to also display the starting username
-10. Add stg of your choice to your components/ elements in the components - both with ie styles and stylesheets
+10. Add styling of your choice to your components/ elements in the components - both with ie styles and stylesheets
