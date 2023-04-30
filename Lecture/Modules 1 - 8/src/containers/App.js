@@ -52,7 +52,8 @@ class App extends Component {
     console.log('4. [App.js] componentDidMount')
   }
 
-  // Use this naming convention for functions not executed directly, but instead passed as a reference
+  // Use this naming convention '..Handler' for functions not executed directly, but instead passed as a reference
+  // This function changes the name of the first person (when a person gets double clicked)
   switchNameHandler = (newName) => {
     console.log('Clicked')
     // this.state.persons = [] --> Bad practice; will not update the DOM and doesn't change the state
@@ -67,12 +68,13 @@ class App extends Component {
     })
   }
 
+  // This method will change the name of each person depending on which input field it is typed in
   twoWayHandler = (personIndex, event) => {
-    // Had you not received personIndex  as a param but instead you received 'id', you can do this --->
+    // Had you not received personIndex  as a param but instead you received 'person.id', you can do this --->
       // let personIndex = this.state.persons.findIndex(p => p.id === id) ---> Returns the index of the first match
       // const person = { ...this.state.persons[personIndex] } ---> To get a copy of the specific person
     let persons = this.state.persons.slice() // To obtain a copy of the array instead of a pointer to the actual array
-    persons[personIndex].name = event.target.value
+    persons[personIndex].name = event.target.value // Change the appropriate field on the copy of persons
     this.setState({ persons: persons })
   }
 
@@ -91,7 +93,7 @@ class App extends Component {
 
   deletePersonHandler = (personIndex) => {
     const persons = [ ...this.state.persons ] // To obtain a copy of the array instead of a pointer to the actual array
-    persons.splice(personIndex, 1)
+    persons.splice(personIndex, 1) // splice/delete one element at the given index
     this.setState({ persons: persons })
   }
 
