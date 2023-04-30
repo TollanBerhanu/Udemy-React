@@ -1,0 +1,7 @@
+.length-input, .error-paragraph{
+    display: inline;
+}
+.error-paragraph {
+    color: red;
+    margin-left: 30px; 
+}
