@@ -4,24 +4,18 @@ import './App.css';
 import Person from '../components/Persons/Person/Person'
 import AppHook from './app_hook';
 import AppClass from './app_class';
-import UserInput from '../components/Persons/Person/UserInput/UserInput';
-import UserOutput from '../components/Persons/Person/UserOutput/UserOutput';
-import Validation from '../components/Persons/Person/Validation/Validation';
-import Characters from '../components/Persons/Person/Characters/Characters';
+// import UserInput from '../components/Persons/Person/UserInput/UserInput';
+// import UserOutput from '../components/Persons/Person/UserOutput/UserOutput';
+// import Validation from '../components/Persons/Person/Validation/Validation';
+// import Characters from '../components/Persons/Person/Characters/Characters';
 import Persons from '../components/Persons/Persons';
 import Cockpit from '../components/Cockpit/Cockpit';
 import WithClass from '../hoc/WithClass';
-import withClass from '../hoc/withClass2';
+import withClass2 from '../hoc/withClass2';
 import AuthContext from '../context/authContext';
 
 // Component Create life cycle methods are called here
 class App extends Component {
-
-  constructor(props){
-    super(props); // Execute constructor of parent class to initialize everyhing and set the state
-    console.log('1. [App.js] constructor')
-    // this.state = ... --> You can also initialize state here
-  }
 
   // We get only one state property per class-based component
   state = {
@@ -38,18 +32,37 @@ class App extends Component {
 
     showCockpit: true,
 
-    changeCounter: 0,
+    changeCounter: 0, // Counts everytime inputChangedHandler is called (when we type in the input fields)
 
-    authenticated: false
+    authenticated: false  // Initially not logged in
   }
 
-  static getDerivedStateFromProps(props, updatedState){ // Usually not used --> to update the state based on new props
-    console.log('2. [App.js] getDerivedStateFromProps', props)
+  constructor(props){
+    super(props); // Execute constructor of parent class to initialize everyhing and set the state
+                  // This is mandatory if you implement the constructor, otherwise it's done automatically.
+    console.log('1. [App.js] constructor')
+    // this.state = {...} --> You can also initialize state here, but we shouldn't cause side-effects (impacts performance)
+    this.btnRef = React.createRef()
+  }
+
+  // This is actually called first when the component gets updated (gets new props / state)
+  // The update lifecycle hooks are illustrated in the Person component
+  static getDerivedStateFromProps(newProps, oldState){ // Usually not used --> to update the state based on new props
+    console.log('2. [App.js] getDerivedStateFromProps', newProps)
+    let updatedState = {...oldState} // manipulate the state based on new props
     return updatedState
   }
 
-  componentDidMount(){ // * Send http requests here
+  // the render() method is executed third... also every child component called inside render() will also run with the
+  // same steps (order of lifecycle hooks) as this component
+
+  componentDidMount(){ // * Send http requests (do side-effects) here, after our UI is rendered
     console.log('4. [App.js] componentDidMount')
+    // Normally we shouldn't call setState in here synchronously (outside of an acync call, like waiting for Http response)
+    // because it will just cause a re-render of the component which we could have done before render() was called.
+
+    // This is how we use ref (reference to an element) in class based components
+    // this.btnref.current.click() // this will click a button referenced by 'btnRef' on componenet mount
   }
 
   // Use this naming convention '..Handler' for functions not executed directly, but instead passed as a reference
@@ -98,8 +111,8 @@ class App extends Component {
   }
 
   inputChangedHandler = (event) => {
-    this.setState((prevState, currentProps) => { // This is the right way of using previous state to update the current state
-      return {
+    this.setState((prevState, currentProps) => { // This is the right way of using previous state to update the current
+      return {                             // state because setState doesn't always execute immediately.
         inputText: event.target.value,
         changeCounter: prevState.changeCounter + 1
       }
@@ -153,19 +166,24 @@ class App extends Component {
         authenticated: this.state.authenticated,
         login: this.authenticationHandler
       } }>
+
       {this.state.showCockpit ?
       <Cockpit title={this.props.appTitle} personsLength={this.state.persons.length} style={style} clicked={this.switchNameHandler}/>
       : null }
       {/* Not recommended, use bind instead */}
       {/* <button onClick={ this.switchNameHandler }>Click Me!</button> -- If the function has no parameters */}
 
-      <button className={buttonClass} onClick={this.togglePersonsHandler}> Toggle Persons </button>
-      
+      <button className={buttonClass} 
+              onClick={this.togglePersonsHandler}
+              // ref={(btnRef) => {btnRef.click()}}   // We can do this inline
+              ref={this.btnRef}> Toggle Persons </button>
+
       { persons }
       </AuthContext.Provider>
+      
       {/* This is another way of adding conditionals although its not prefered */}
       { this.state.showPersons ? 
-      <div>
+      <div className='person'>
         <Person name="Default Name" age="00" click={ this.switchNameHandler.bind(this, 'Manu!!!') }> 
           { this.state.otherState } 
         </Person> {/* Alternative better way of passing parameters ---> .bind(this, 'param') */}
@@ -179,19 +197,19 @@ class App extends Component {
       <AppClass />
 
       {/* Module 3 assignment */}
-      <UserInput changeUsername={this.changeUsernameHandler} username={this.state.username} />
+      {/* <UserInput changeUsername={this.changeUsernameHandler} username={this.state.username} />
       <UserOutput username={this.state.username} />
-      <UserOutput username={this.state.username} />
+      <UserOutput username={this.state.username} /> */}
 
       {/* Module 4 Assignment */}
-      <input type="text" onChange={ this.inputChangedHandler } value={this.state.inputText} />
+      {/* <input type="text" onChange={ this.inputChangedHandler } value={this.state.inputText} />
       <p>Length: { this.state.inputText } </p>
       <Validation textLength={ this.state.inputText.length } />
       {
         this.state.inputText.split('').map((char, index) => {
           return <Characters char={char} key={index} clicked={ () => this.deleteCharHandler(index) } />
         })
-      }
+      } */}
 
     </WithClass>
     );
@@ -201,4 +219,4 @@ class App extends Component {
   //   React.createElement('h2', null, 'This is rendered uning React.createElement()'))
 }
 
-export default withClass(App, 'App');
+export default withClass2(App, 'App');

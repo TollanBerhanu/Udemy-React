@@ -23,3 +23,9 @@
   background-color: salmon;
   color: black;
 }
+
+/* @media (min-width: 500px) {
+  .App .person{
+    width: 450px;
+  } 
+} */
